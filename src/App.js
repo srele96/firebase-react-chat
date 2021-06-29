@@ -1,23 +1,24 @@
-import logo from './logo.svg';
-import './App.css';
+import { auth } from './firebase/firebase';
+import Auth from './components/Auth';
+import SignedIn from './components/SignedIn';
+
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 function App() {
+  const [user, loading, error] = useAuthState(auth());
+
+  if(error) return (
+    <div>
+      Oops! Something went wrong. Please refresh the page.
+      <button onClick={document.location.reload}>Refresh</button>
+    </div>
+  );
+
+  if(loading) return <div>Loading...</div>;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {user ? <SignedIn user={user} /> : <Auth />}
     </div>
   );
 }
